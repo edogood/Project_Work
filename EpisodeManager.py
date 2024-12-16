@@ -6,7 +6,7 @@ class EpisodeManager:
     def __init__(self, directory: str, connection_str: str):
         """
         Initializes the class with the directory containing .txt files and the database connection string.
- 
+
         Args:
             directory (str): The path to the directory containing the .txt files of episodes.
             connection_str (str): The database connection string for SQL Server.
@@ -17,7 +17,7 @@ class EpisodeManager:
     def find_files(self) -> list:
         """
         Finds all .txt files in the specified directory.
- 
+
         Returns:
             list: A list of .txt filenames found in the directory.
         """
@@ -28,11 +28,11 @@ class EpisodeManager:
     def determine_season_from_filename(self, episode_name: str, prefix_map: dict) -> int:
         """
         Determines the season based on the prefix in the filename, using a map of prefixes for different series.
- 
+
         Args:
             episode_name (str): The name of the episode file (without the .txt extension).
             prefix_map (dict): A dictionary mapping series prefixes (e.g., "VOY", "ENT", etc.) to season numbers.
- 
+
         Returns:
             int: The season number (1-6) if the prefix is valid, otherwise 0 (unknown season).
         """
@@ -54,10 +54,10 @@ class EpisodeManager:
     def populate_dictionary(self, files: list) -> list:
         """
         Populates a dictionary with episode data from .txt files.
- 
+
         Args:
             files (list): A list of .txt filenames to process.
- 
+
         Returns:
             list: A list of dictionaries containing episode data, including characters and their lines.
         """
@@ -103,6 +103,12 @@ class EpisodeManager:
 
             for episode in episodes_data:
                 episode_name = episode["episode_number"]  # Full episode name (e.g., "voy_e_1")
+
+                # Assicurati che episode_name sia una stringa
+                if isinstance(episode_name, int):
+                    episode_name = str(episode_name)
+
+                # Ora facciamo lo split, supponendo che episode_name sia una stringa
                 episode_number = episode_name.split("_e_")[1]  # Extract episode number (e.g., "1")
                 season = self.determine_season_from_filename(episode_name, self.prefix_map)  # Determine season based on prefix
 
@@ -131,7 +137,12 @@ class EpisodeManager:
             cursor = conn.cursor()
             for i, episode in enumerate(episodes_data):
                 episode_id = episode_ids[i]
-                characters_lines = episode["script"]
+                characters_lines = episode.get("script", [])  # Usare .get() per evitare errori se "script" non esiste
+
+                if not characters_lines:
+                    print(f"No script data found for episode {episode['episode_number']}")
+                    continue  # Se non c'è script, continua con il prossimo episodio
+
                 for entry in characters_lines:
                     character = entry["nome personaggio"]
                     for line in entry["battute"]:
@@ -166,15 +177,6 @@ class EpisodeManager:
         try:
             with open(json_filename, "r", encoding="utf-8") as json_file:
                 episodes_data = json.load(json_file)
-
-            # Extract episode number by removing the prefix (e.g., "voy_e_1" becomes "1")
-            for episode in episodes_data:
-                episode_name = episode["episode_number"]  # Full name (e.g., "voy_e_1")
-                episode_number = episode_name.split("_e_")[1]  # Extracting the number (e.g., "1")
-                
-                # Update episode_number to contain only the number (integer)
-                episode["episode_number"] = int(episode_number)
-
             print(f"Episode data successfully loaded from {json_filename}")
             return episodes_data
         except Exception as e:
