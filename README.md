@@ -8,7 +8,7 @@ Backup File (Bak): A backup of the server data, typically stored as a .bak file.
 Project.py: The main executable script that ties everything together by executing the classes and operations.
 config.ini: A configuration file used for setting up parameters, such as connection strings and paths.
 
-Star_Trek_Project
+EpisodeManagerProject/
 ├── EpisodeManager.py          # Main class for managing episodes and JSON data
 ├── InImage.py                 # Class for finding images related to episodes
 ├── Project.py                 # Main entry point that executes the classes
@@ -18,3 +18,4 @@ Star_Trek_Project
 │   └── server.bak             # Backup file for the server data
 ├── config.ini                 # Configuration file for connection string, paths, etc.
 └── README.md                  # This README file
+
