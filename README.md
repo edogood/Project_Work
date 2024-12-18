@@ -9,13 +9,20 @@ Project.py: The main executable script that ties everything together by executin
 config.ini: A configuration file used for setting up parameters, such as connection strings and paths.
 
 EpisodeManagerProject/
+
 ├── EpisodeManager.py          # Main class for managing episodes and JSON data
+
 ├── InImage.py                 # Class for finding images related to episodes
+
 ├── Project.py                 # Main entry point that executes the classes
+
 ├── data/
 │   └── episodes.json          # JSON file storing episode details
+
 ├── backups/
 │   └── server.bak             # Backup file for the server data
+
 ├── config.ini                 # Configuration file for connection string, paths, etc.
+
 └── README.md                  # This README file
 
